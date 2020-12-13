@@ -114,7 +114,7 @@ export default class App extends Component {
             <img src={Laptop} alt="Laptop" className="heading-img" />
             <h1 className="heading-title">My TODO List</h1>
           </div>
-          <div>Completed: <span className="completed-count">0 of 0</span> items</div>
+          <div>Completed: <span className="completed-count">{todos.complete.length} of {todos.complete.length + todos.incomplete.length}</span> items</div>
           <section className="todo__add">
             <div className="todo__title-wrap" id="js-label-add">
               <label htmlFor="js-new-task" className="section__title section__title--add">Add Item</label>
