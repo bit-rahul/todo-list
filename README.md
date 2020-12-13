@@ -13,20 +13,20 @@ In the project directory, you can run:
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Folder Structure
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   ├── logo192.png
-│   ├── logo512.png
-│   ├── manifest.json
-│   └── robots.txt
-├── src
-│   ├── App.css
-│   ├── App.js
-│   ├── index.js
-│   └── Laptop.svg
-├── .eslintcache
-├── .gitignore
-├── package-lock.json
-├── package.json
-└── README.md
+├── public <br>
+│   ├── favicon.ico <br>
+│   ├── index.html <br>
+│   ├── logo192.png <br>
+│   ├── logo512.png <br>
+│   ├── manifest.json <br>
+│   └── robots.txt <br>
+├── src <br>
+│   ├── App.css <br>
+│   ├── App.js <br>
+│   ├── index.js <br>
+│   └── Laptop.svg <br>
+├── .eslintcache <br>
+├── .gitignore <br>
+├── package-lock.json <br>
+├── package.json <br>
+└── README.md <br>
