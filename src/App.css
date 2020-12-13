@@ -136,14 +136,14 @@ h3 {
 
 .task {
   overflow     : hidden;
-  padding      : 15px 0;
+  padding      : 10px 0;
   border-bottom: 1px solid rgb(241, 240, 240);
 }
 
 .task__checkbox {
   margin  : 0 10px;
   position: relative;
-  top     : 15px;
+  top     : 10px;
 }
 
 .task__title {
@@ -185,7 +185,7 @@ h3 {
 }
 
 .todo__title-wrap--todo {
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
 }
 
 .icon__add:hover {
