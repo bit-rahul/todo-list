@@ -11,17 +11,29 @@ export default class App extends Component {
         incomplete: []
       },
       newTodo: "",
-      isDeleting: false
+      isDeleting: false,
+      isEditing: false,
+      modifyType: "",
+      deleteType: "",
+      modifyIndex: -1,
+      deleteIndex: -1
     }
+  }
+
+  saveTodos = () => {
+    localStorage.setItem("todos", JSON.stringify(this.state.todos))
   }
 
   addTodo = () => {
     let { newTodo, todos } = this.state;
+    if (newTodo === "") return
     todos.incomplete.push(newTodo);
     this.setState({
       todos,
       newTodo: ""
-    })
+    },
+      () => this.saveTodos()
+    )
   }
 
   handleChange = (val, index) => {
@@ -39,13 +51,64 @@ export default class App extends Component {
     }
     this.setState({
       todos
+    },
+      () => this.saveTodos()
+    )
+  }
+
+  openDelete = (val, index) => {
+    this.setState({
+      isDeleting: true,
+      deleteIndex: index,
+      deleteType: val
     })
   }
 
+  openEdit = (val, index) => {
+    this.setState({
+      isEditing: true,
+      modifyIndex: index,
+      modifyType: val
+    })
+  }
+
+  resetDeleteFields = () => {
+    this.setState({
+      isDeleting: false,
+      deleteIndex: -1,
+      deleteType: ""
+    })
+  }
+
+  resetEditFields = () => {
+    this.setState({
+      isEditing: false,
+      modifyIndex: -1,
+      modifyType: ""
+    })
+  }
+
+  deleteTodo = () => {
+    let { deleteIndex, deleteType, todos } = this.state;
+    if (deleteType === "incomplete") {
+      todos.incomplete.splice(deleteIndex, 1);
+    } else if (deleteType === "complete") {
+      todos.complete.splice(deleteIndex, 1);
+    }
+    this.setState({
+      todos,
+      isDeleting: false,
+      deleteIndex: -1,
+      deleteType: ""
+    },
+      () => this.saveTodos()
+    )
+  }
+
   render() {
-    let { todos, newTodo } = this.state;
+    let { todos, newTodo, isEditing, modifyIndex, modifyType, deleteIndex, deleteType } = this.state;
     return (
-      <div className="App">
+      <>
         <section className="container">
           <div className="heading">
             <img src={Laptop} alt="Laptop" className="heading-img" />
@@ -60,46 +123,78 @@ export default class App extends Component {
             <button id="js-add-button" className="button" onClick={e => this.addTodo()}><i className="material-icons icon__add">add_circle</i></button>
           </section>
           <section className="todo__list">
-            <div className="todo__title-wrap todo__title-wrap--todo" id="js-todo">
+            <div className="todo__title-wrap todo__title-wrap--todo" id="js-todo" style={{ marginBottom: "0.2em" }}>
               <h3 className="section__title">To-do</h3>
             </div>
             <ul id="js-incomplete-tasks" className="list">
               {
-                todos.incomplete.map((todo, i) => (
-                  <li class="task" key={i}>
-                    <input type="checkbox" class="task__checkbox" onChange={e => this.handleChange("incomplete", i)} />
-                    <label class="task__title">{todo}</label>
-                    <input type="text" class="text-input task__input" />
-                    <button class="button task__delete">
-                      <i class="material-icons icon__delete">delete</i>
-                    </button>
-                    <button class="button task__edit">
-                      <i class="material-icons icon__edit">mode_edit</i>
-                    </button>
-                  </li>
-                ))
+                todos.incomplete.length > 0
+                  ?
+                  todos.incomplete.map((todo, i) => (
+                    <li class={
+                      (isEditing && modifyIndex === i && modifyType === "incomplete")
+                        ?
+                        "task is-editing"
+                        :
+                        "task"
+                    } key={i}>
+                      <input type="checkbox" checked={false} class="task__checkbox" onChange={e => this.handleChange("incomplete", i)} />
+                      <label class="task__title">{todo}</label>
+                      <input type="text" class="text-input task__input" value={todo} onChange={e => {
+                        todos.incomplete[i] = e.target.value;
+                        this.setState({ todos },
+                          () => this.saveTodos()
+                        )
+                      }} />
+                      <button class="button task__delete" onClick={e => this.openDelete("incomplete", i)}>
+                        <i class="material-icons icon__delete">delete</i>
+                      </button>
+                      <button class="button task__edit" disabled={todo === ""}
+                        onClick={
+                          e => {
+                            (isEditing && modifyIndex === i && modifyType === "incomplete")
+                              ?
+                              this.resetEditFields()
+                              :
+                              this.openEdit("incomplete", i)
+                          }
+                        }
+                      >
+                        {
+                          (isEditing && modifyIndex === i && modifyType === "incomplete")
+                            ?
+                            <i class="material-icons icon__edit">playlist_add_check</i>
+                            :
+                            <i class="material-icons icon__edit">mode_edit</i>
+                        }
+                      </button>
+                    </li>
+                  ))
+                  :
+                  <span style={{ color: "grey", fontSize: "16px" }}>No records found!</span>
               }
             </ul>
           </section>
           <section className="todo__done">
-            <div className="todo__title-wrap" id="js-completed">
+            <div className="todo__title-wrap" id="js-completed" style={{ marginBottom: "0.2em" }}>
               <h3 className="section__title">Completed</h3>
             </div>
             <ul id="js-completed-tasks" className="list">
               {
-                todos.complete.map((todo, i) => (
-                  <li class="task" key={i}>
-                    <input type="checkbox" checked class="task__checkbox" onChange={e => this.handleChange("complete", i)} />
-                    <label class="task__title is-done">{todo}</label>
-                    <input type="text" class="text-input task__input" />
-                    <button class="button task__delete">
-                      <i class="material-icons icon__delete">delete</i>
-                    </button>
-                    <button class="button task__edit">
-                      <i class="material-icons icon__edit">mode_edit</i>
-                    </button>
-                  </li>
-                ))
+                todos.complete.length > 0
+                  ?
+                  todos.complete.map((todo, i) => (
+                    <li class="task" key={i}>
+                      <input type="checkbox" checked class="task__checkbox" onChange={e => this.handleChange("complete", i)} />
+                      <label class="task__title is-done">{todo}</label>
+                      <input type="text" class="text-input task__input" />
+                      <button class="button task__delete" onClick={e => this.openDelete("complete", i)}>
+                        <i class="material-icons icon__delete">delete</i>
+                      </button>
+                    </li>
+                  ))
+                  :
+                  <span style={{ color: "grey", fontSize: "16px" }}>No records found!</span>
               }
             </ul>
           </section>
@@ -110,14 +205,14 @@ export default class App extends Component {
             <div class="overlay">
               <div class="alert">
                 <p>Delete this item?</p>
-                <button class="button alert__button alert__button--no">No</button>
-                <button class="button alert__button alert__button--yes">Yes</button>
+                <button class="button alert__button alert__button--no" onClick={e => this.resetDeleteFields()}>No</button>
+                <button class="button alert__button alert__button--yes" onClick={e => this.deleteTodo()}>Yes</button>
               </div>
             </div>
             :
             ""
         }
-      </div>
+      </>
     )
   }
 }

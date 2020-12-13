@@ -93,8 +93,8 @@ h3 {
 }
 
 .todo__done {
-  padding-top: 18px;
-  z-index    : 0;
+  /* padding-top: 18px; */
+  z-index: 0;
 }
 
 .button {
@@ -110,6 +110,11 @@ h3 {
 
 .button:hover {
   color: #252525;
+}
+
+button:disabled {
+  cursor        : not-allowed;
+  pointer-events: all !important;
 }
 
 .section__title {
@@ -135,9 +140,9 @@ h3 {
 }
 
 .task {
-  overflow     : hidden;
-  padding      : 10px 0;
-  border-bottom: 1px solid rgb(241, 240, 240);
+  overflow        : hidden;
+  /* padding      : 10px 0; */
+  border-bottom   : 1px solid rgb(241, 240, 240);
 }
 
 .task__checkbox {
