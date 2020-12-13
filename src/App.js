@@ -6,7 +6,7 @@ export default class App extends Component {
   constructor(props) {
     super();
     this.state = {
-      todos: JSON.parse(localStorage.getItem("todos")) || {
+      todos: JSON.parse(localStorage.getItem("r-todos")) || {
         complete: [],
         incomplete: []
       },
@@ -21,7 +21,7 @@ export default class App extends Component {
   }
 
   saveTodos = () => {
-    localStorage.setItem("todos", JSON.stringify(this.state.todos))
+    localStorage.setItem("r-todos", JSON.stringify(this.state.todos))
   }
 
   addTodo = () => {
@@ -115,13 +115,16 @@ export default class App extends Component {
             <h1 className="heading-title">My TODO List</h1>
           </div>
           <div>Completed: <span className="completed-count">{todos.complete.length} of {todos.complete.length + todos.incomplete.length}</span> items</div>
-          <section className="todo__add">
+          <form className="todo__add" onSubmit={e => {
+            e.preventDefault();
+            this.addTodo();
+          }}>
             <div className="todo__title-wrap" id="js-label-add">
               <label htmlFor="js-new-task" className="section__title section__title--add">Add Item</label>
             </div>
             <input id="js-new-task" onChange={e => this.setState({ newTodo: e.target.value })} className="text-input task__input--new" type="text" value={newTodo} />
-            <button id="js-add-button" className="button" onClick={e => this.addTodo()}><i className="material-icons icon__add">add_circle</i></button>
-          </section>
+            <button id="js-add-button" className="button" type="submit"><i className="material-icons icon__add">add_circle</i></button>
+          </form>
           <section className="todo__list">
             <div className="todo__title-wrap todo__title-wrap--todo" id="js-todo" style={{ marginBottom: "0.2em" }}>
               <h3 className="section__title">To-do</h3>
